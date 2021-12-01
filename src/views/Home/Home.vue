@@ -11,7 +11,7 @@
     placement="bottom"
     :width="120"
     trigger="hover"
-    title="user"
+    title="当前user："
     :content="user"
   >
     <template #reference>
