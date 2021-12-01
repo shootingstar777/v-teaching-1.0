@@ -1,0 +1,85 @@
+html,body,#app{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+.text {
+  font-style: italic;
+  font-size: 36px;
+}
+
+.el-main {
+  background: #eee;
+}
+
+.el-breadcrumb{
+  margin-bottom: 20px;
+}
+.el-table{
+  margin-top: 20px;
+}
+.el-pagination{
+  margin-top: 15px;
+}
+.el-col {
+  margin: 10px 0;
+}
+
+.title {
+  margin: 20px 0;
+}
+
+.optionName {
+  display: absolute;
+  top: 10px;
+}
+
+.collect {
+  float: right;
+  cursor: pointer;
+}
+
+.el-radio {
+  margin-bottom: 20px;
+}
+
+.pageShowing {
+  position: relative;
+  margin: 20px;
+}
+
+.btns{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+ .LoginBtns{
+   display: flex;
+   justify-content: space-between;
+}
+.collect {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.cInput {
+  width: 800px;
+  position: absolute;
+  bottom: -100px;
+}
+
+.answer:hover {
+  color: #409eff;
+}
+
+.el-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.tipsInfo{
+  margin: 20px;
+}
