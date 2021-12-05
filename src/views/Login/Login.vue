@@ -14,10 +14,10 @@
         :rules="LoginFormRules"
       >
         <!-- 用户名 -->
-        <el-form-item prop="username">
+        <el-form-item prop="userName">
           <el-input
             prefix-icon="el-icon-user"
-            v-model="LoginForm.username"
+            v-model="LoginForm.userName"
           ></el-input>
         </el-form-item>
         <!-- 密码 -->
@@ -30,146 +30,206 @@
         </el-form-item>
         <!-- 按钮区 -->
         <el-form-item class="LoginBtns">
-          <el-button  type="success"  @click="dialogFormVisible = true" round>注册</el-button>
+          <el-button type="success" @click="dialogFormVisible = true" round
+            >注册</el-button
+          >
           <el-button type="info" round @click="resetLoginForm">重置</el-button>
           <el-button type="primary" round @click="login">登录</el-button>
         </el-form-item>
       </el-form>
-
     </div>
 
-<!-- 注册界面 -->
-  <!-- Form -->
-  <el-dialog :visible="dialogFormVisible" title="注册" center :show-close="false"	 >
-    <el-form :model="registerForm" :rules="LoginFormRules" ref="ruleForm"  status-icon>
-      <el-form-item label="username" :label-width="formLabelWidth" prop="username">
-        <el-input v-model="registerForm.username" autocomplete="off" style="width:360px"></el-input>
-      </el-form-item>
-      <el-form-item label="password" :label-width="formLabelWidth" prop="password">
-        <el-input v-model="registerForm.password" autocomplete="off"  style="width:360px" type="password"></el-input>
-      </el-form-item>
-      <el-form-item label="email/phone" :label-width="formLabelWidth" prop="information">
-        <el-input v-model="registerForm.information" autocomplete="off"  style="width:360px"></el-input>
-      </el-form-item>
-    </el-form>
-
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="registerCancel()">取消</el-button>
-        <el-button type="primary" @click="registerFinish()"
-          >注册</el-button
+    <!-- 注册界面 -->
+    <!-- Form -->
+    <el-dialog
+      :visible="dialogFormVisible"
+      title="注册"
+      center
+      :show-close="false"
+    >
+      <el-form
+        :model="registerForm"
+        :rules="LoginFormRules"
+        ref="ruleForm"
+        status-icon
+      >
+        <el-form-item
+          label="userName"
+          :label-width="formLabelWidth"
+          prop="userName"
         >
-      </span>
-    </template>
-  </el-dialog>
-<!--  -->
+          <el-input
+            v-model="registerForm.userName"
+            autocomplete="on"
+            style="width: 60%"
+            @blur="checkUserName()"
+          ></el-input>
+          <p class="registerUsernameInfo">{{ registerUsernameInfo }}</p>
+        </el-form-item>
+        <el-form-item
+          label="password"
+          :label-width="formLabelWidth"
+          prop="password"
+        >
+          <el-input
+            v-model="registerForm.password"
+            autocomplete="off"
+            style="width: 60%"
+            type="password"
+            @blur="checkUserName()"
+          ></el-input>
+          <p class="registerPasswordInfo">{{ registerPasswordInfo }}</p>
+        </el-form-item>
+      </el-form>
 
-
-
-
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="registerCancel()">取消</el-button>
+          <el-button type="primary" @click="registerFinish()">注册</el-button>
+        </span>
+      </template>
+    </el-dialog>
+    <!--  -->
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Login',
+  name: "Login",
   components: {},
-  data () {
+  data() {
     return {
-      dialogVisible:false,
+      dialogVisible: false,
       LoginForm: {
-        username: 'admin',
-        password: '123456',
+        userName: "shooting",
+        password: "Aa123456!",
       },
-      registerForm:{
-        username:'',
-        password:'',
-        information:''
+      registerForm: {
+        userName: "",
+        password: "",
       },
       LoginFormRules: {
         /* 验证用户名是否合法 */
-        username: [
+        userName: [
           {
             required: true,
-            message: '请输入登录名称',
-            trigger: 'blur'
+            message: "请输入登录名称",
+            trigger: "blur",
           },
           {
             min: 2,
-            max: 6,
-            message: '长度需要2-6个字符',
-            trigger: 'blur'
-          }
+            max: 8,
+            message: "长度需要2-8个字符",
+            trigger: "blur",
+          },
         ],
         /* 验证密码是否合法 */
         password: [
           {
             required: true,
-            message: '请输入登录密码'
+            message: "请输入登录密码",
           },
           {
             min: 6,
             max: 15,
-            message: '长度需要6-15个字符',
-            trigger: 'blur'
-          }
-        ],
-        /*  */information:[
-           {
-            required: true,
-            message: '请输入联系方式'
+            message: "长度需要6-15个字符",
+            trigger: "blur",
           },
-          {
-            min: 11,
-            max: 20,
-            message: '请输入合理的联系方式',
-            trigger: 'blur'
-          }
         ],
       },
-       dialogFormVisible: false,
-      formLabelWidth: '20%',
-    }
+      registerUsernameInfo: "",
+      registerPasswordInfo: "",
+      dialogFormVisible: false,
+      formLabelWidth: "30%",
+    };
   },
   methods: {
     /* 点击重置按钮，重置登录表单 */
-    resetLoginForm () {
+    resetLoginForm() {
       this.$nextTick(() => {
-        this.$refs.loginFormRef.resetFields()
-      })
-      this.$refs.loginFormRef.resetFields()
+        this.$refs.loginFormRef.resetFields();
+      });
+      this.$refs.loginFormRef.resetFields();
     },
     /* 点击登录按钮，登录 */
-    login () {
-      this.$refs.loginFormRef.validate(valid => {
+    login() {
+      this.$refs.loginFormRef.validate(async (valid) => {
         if (valid) {
-          this.$message.success('登录成功，欢迎进入')
-          window.sessionStorage.setItem('token', 'temp')
-          return this.$router.push('/home')
-        } if (!valid) {
-          return this.$message.error('登录失败')
+          this.$http.post("user/login", this.LoginForm).then(
+            (res) => {
+              if (res.success == true) {
+                window.sessionStorage.setItem("token", res.data.token);
+                this.$message.success("登录成功，欢迎进入");
+                this.$http
+                  .get("user/getUserInfo", {
+                    params: { token: sessionStorage.getItem("token") },
+                  })
+                  .then(
+                    (res) => {
+                      console.log(res);
+                    },
+                    (err) => {
+                      console.log(err);
+                    }
+                  );
+                return this.$router.push("/home");
+              }
+            },
+            (err) => {
+              return this.$message.error(err.message);
+            }
+          );
         }
-      })
+        if (!valid) {
+          return this.$message.error("登录失败");
+        }
+      });
     },
-    registerCancel(){
-      this.dialogFormVisible = false
-
- this.$message.error("取消注册")
+    /* 取消注册 */
+    registerCancel() {
+      this.dialogFormVisible = false;
+      this.$message.error("取消注册");
     },
-    registerFinish(){
-
-this.$refs.ruleForm.validate((res)=>{
-  if(res==false){
-    return;
-  }else{
-     this.dialogFormVisible = false
-this.$refs.ruleForm.resetFields()
- this.$message.success("注册成功，请登录")
-  }
-  });
-    }
-    }
-}
+    /* 点击注册按钮 */
+    registerFinish() {
+      this.$refs.ruleForm.validate((res) => {
+        if (res == false) {
+          return;
+        } else {
+          this.$http.post("user/sign", this.registerForm).then(
+            (response) => {
+              this.$message.success("注册成功，请重新登录");
+              this.dialogFormVisible = false;
+              this.$refs.ruleForm.resetFields();
+            },
+            (err) => {
+              return (this.registerPasswordInfo = err.message);
+            }
+          );
+        }
+      });
+    },
+    /* 输入表单验证 */
+    checkUserName() {
+      this.registerUsernameInfo = "";
+      this.$http
+        .get("user/checkUserName", {
+          params: { userName: this.registerForm.userName },
+        })
+        .then(
+          (res) => {
+            console.log(res);
+            if (!res.data) {
+              return (this.registerUsernameInfo = "用户名已存在");
+            }
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
@@ -216,14 +276,22 @@ this.$refs.ruleForm.resetFields()
   padding: 0 20px;
   box-sizing: border-box;
 }
-.dialog-footer{
+.dialog-footer {
   display: flex;
   justify-content: space-between;
 }
-.el-dialog .el-form{
+.el-dialog .el-form {
   height: 180px;
 }
-.el-form-item__content{
-    margin-top: 30px;
+.el-form-item__content {
+  margin-top: 30px;
+}
+.registerUsernameInfo,
+.registerPasswordInfo {
+  font-size: 12px;
+  width: 60%;
+  color: #f56c6c;
+  margin: 0;
+  padding: 0;
 }
 </style>

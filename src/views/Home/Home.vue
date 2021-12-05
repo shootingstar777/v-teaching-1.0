@@ -101,6 +101,7 @@ export default {
     this.activePath = window.sessionStorage.getItem("activePath");
   },
   methods: {
+    /* 退出登录 */
     logout() {
       window.sessionStorage.clear();
       this.$router.push("/login");
