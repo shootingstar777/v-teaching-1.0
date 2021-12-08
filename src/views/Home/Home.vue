@@ -2,22 +2,13 @@
   <el-container class="home-container">
     <!-- 头部区域 -->
     <el-header>
-     
-        <img src="../../assets/logo.png" style="width: 80%;" alt="" />
-        <span>教资练习系统</span>
-      
-     
-      <el-popover
-    placement="bottom"
-    :width="120"
-    trigger="hover"
-    title="当前user："
-    :content="user"
-  >
-    <template #reference>
-     <el-button class="logout" type="danger" @click="logout">退出登录</el-button>
-    </template>
-  </el-popover>
+      <img src="../../assets/logo.png" style="width: 80%" alt="" />
+      <span>教资练习系统</span>
+ 
+          <el-button class="logout" type="danger" @click="logout"
+            >退出登录</el-button
+          >
+   
     </el-header>
     <!-- 页面主体 -->
     <el-container>
@@ -40,13 +31,18 @@
               <span>专项训练</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/comprehensiveQuality" @click="saveNavState('/comprehensiveQuality')"
+              <el-menu-item
+                index="/comprehensiveQuality"
+                @click="saveNavState('/comprehensiveQuality')"
                 ><i class="el-icon-orange" /><span>综合素质</span></el-menu-item
               >
-              <el-menu-item index="/education" @click="saveNavState('/education')"
+              <el-menu-item
+                index="/education"
+                @click="saveNavState('/education')"
                 ><i class="el-icon-orange" /><span
                   >教育知识与能力</span
-                ></el-menu-item>
+                ></el-menu-item
+              >
             </el-menu-item-group>
           </el-submenu>
 
@@ -67,38 +63,35 @@
             @click="saveNavState('/collection')"
           >
             <i class="el-icon-menu" />
-            <span>错题与收藏</span>
+            <span>收藏</span>
           </el-menu-item>
         </el-menu>
-        </el-aside
-      >
+      </el-aside>
       <!-- 右侧页面部分 -->
       <el-main>
         <!-- 路由占位符 -->
-        <router-view ></router-view>
+        <router-view></router-view>
       </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script>
-
 export default {
   name: "Home",
   data() {
     return {
       menuList: [],
       isCollapse: false,
-      activePath: '' /* 激活的链接地址 */,
-      user:'admin',
+      activePath: "" /* 激活的链接地址 */,
+      user: "",
     };
   },
-  computed:{
-  
-  },
+  computed: {},
   created() {
-    this.getMenuList()
+    this.getMenuList();
     this.activePath = window.sessionStorage.getItem("activePath");
+    this.user = this.$store.userName;
   },
   methods: {
     /* 退出登录 */
@@ -116,13 +109,13 @@ export default {
     saveNavState(activePath) {
       window.sessionStorage.setItem("activePath", activePath);
       this.activePath = activePath;
+     
     },
   },
 };
 </script>
 
 <style>
-
 .home-container {
   height: 100%;
 }
@@ -138,7 +131,7 @@ export default {
   height: 40px;
   margin-left: 20px;
 }
-.el-header .el-button{
+.el-header .el-button {
   margin-right: 20px;
 }
 .el-aside {
@@ -159,5 +152,4 @@ export default {
   letter-spacing: 0.5em;
   cursor: pointer;
 }
-
 </style>

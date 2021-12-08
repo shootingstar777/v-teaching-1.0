@@ -9,16 +9,17 @@ import store from './store/index.js'
 
 Vue.config.productionTip = false
 Vue.prototype.$Data = Data
-Vue.prototype.$store = store.state
 
-axios.defaults.timeout=5000
+axios.defaults.timeout=-1
 axios.defaults.baseURL = "http://localhost:8080"
 Vue.prototype.$http = axios
 
 axios.interceptors.request.use(
   config => {
-    config.headers['Authorization'] = sessionStorage.getItem('Authorization')
-   
+    const token=sessionStorage.getItem('token')
+    if(token){
+      config.headers.Authorization=token
+    }
     return config
   },
   error => {
@@ -53,5 +54,6 @@ localStorage.setItem('data',JSON.stringify(Data))
 new Vue({
   router,
   axios,
+  store,
   render: h => h(App)
 }).$mount('#app')

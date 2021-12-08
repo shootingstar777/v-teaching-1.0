@@ -16,27 +16,33 @@
           ref="carousel"
           :loop="false"
         >
-          <el-carousel-item v-for="(item, index) in data" :key="item.id">
-            <el-tag class="optionName">{{ item.optionName }}</el-tag>
+         <el-carousel-item
+            v-for="(item, index) in questionData"
+            :key="item.id"
+          >
+            <el-tag class="optionName">单选</el-tag>
+
             <el-tag
-              v-if="item.collected == false"
               type="warning"
               class="collect"
               @click="collectBtnClick(item, index)"
               >收藏</el-tag
             >
-            <el-tag
-              v-else
-              type="info"
-              class="collect"
-              @click="collectBtnClick(item, index)"
-              >取消收藏</el-tag
-            >
-            <h1>{{ index + 1 }}.{{ item.state }}</h1>
+           
+            <h1 :class="questionName">{{ index + 1 }}.{{ item.question }}</h1>
             <div>
-              <el-radio-group v-model="item.choice" v-if="item.option">
-                <div v-for="i in item.option" :key="i">
-                  <el-radio :label="i">{{ i }}</el-radio>
+              <el-radio-group v-model="choice" @change="makeChoice">
+                <div>
+                  <el-radio :label="item.optionA">{{ item.optionA }}</el-radio>
+                </div>
+                <div>
+                  <el-radio :label="item.optionB">{{ item.optionB }}</el-radio>
+                </div>
+                <div>
+                  <el-radio :label="item.optionC">{{ item.optionC }}</el-radio>
+                </div>
+                <div>
+                  <el-radio :label="item.optionD">{{ item.optionD }}</el-radio>
                 </div>
               </el-radio-group>
             </div>
@@ -53,7 +59,7 @@
             <p class="answer">答案与解析</p>
           </template>
           <h1>本题的答案为: {{ showAnswer() }}</h1>
-          <p>解析：{{ explanation() }}</p>
+          <p>解析：{{ showExplain() }}</p>
         </el-collapse-item>
       </el-collapse>
     </el-card>
@@ -64,55 +70,83 @@
 export default {
 data() {
     return {
+      choice: "",
       data: "",
       index: 0,
       activeName: "",
+       questionData: "",
+       questionName:""
     };
   },
   created() {
     this.load();
   },
   methods: {
-    collectBtnClick(item, index) {
-      let newData = JSON.parse(localStorage.getItem("data"));
-      if (item.collected == false) {
-        this.$message.success("收藏成功");
-        newData[index].collected = true;
-        item.collected = !item.collected;
-      } else if (item.collected == true) {
-        this.$message.info("取消收藏");
-        newData[index].collected = false;
-        item.collected = !item.collected;
-      }
-      localStorage.setItem("data", JSON.stringify(newData));
+   collectBtnClick(item, index) {
+      this.$http
+        .post("collection/star", {
+          questionId: item.id,
+        })
+        .then(
+          (res) => {
+            this.$message.success("收藏成功");
+            this.type="success"
+          },
+          (err) => {
+           this.$message.error(err.message)
+          }
+        );
     },
+    
     load() {
-      this.data = JSON.parse(localStorage.getItem("data"));
+      this.$http.post("question/module", { module: 1 }).then(
+        (res) => {
+          console.log(res);
+          this.$store.commit("getQuestionData", res.data);
+          this.questionData = res.data;
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
     },
     forceUpDate() {
       this.$forceUpdate();
     },
     nextPage() {
       this.$refs.carousel.next();
-
       this.index = this.$refs.carousel.activeIndex;
+      this.questionName=""
     },
     lastPage() {
       this.$refs.carousel.prev();
       this.index = this.$refs.carousel.activeIndex;
+      this.questionName=""
     },
+     /* 获取答案与解析 */
     showAnswer() {
-      const temp = JSON.parse(localStorage.getItem("data"));
-      return temp[this.index].answer;
+      return this.questionData[this.index].answer;
     },
-    explanation() {
-      const temp = JSON.parse(localStorage.getItem("data"));
-      return temp[this.index].explain;
+    showExplain() {
+      return this.questionData[this.index].questionExplain;
+    }, 
+    makeChoice(choice) {
+      if (choice == this.questionData[this.index].answer) {
+        this.questionName = "right";
+      } else {
+        this.questionName = "wrong";
+      }
     },
   },
 }
 </script>
 
 <style>
+.right {
+  color: #67C23A;
+}
 
+.wrong {
+  color: #F56C6C;
+}
 </style>

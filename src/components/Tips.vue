@@ -31,12 +31,14 @@
 </template>
 
 <script>
+ import tips from '../tips.js';
 export default {
+ 
   data() {
     return {
       count: 10,
       loading: false,
-      tips: "",
+      tips,
     };
   },
   computed: {
@@ -48,7 +50,8 @@ export default {
     },
   },
   created(){
- this.tips = this.$store.tips;
+
+
   },
   methods: {
     load() {

@@ -57,16 +57,19 @@ export default {
 }
 .box1,.box2,.box3{
   position: relative;
+  color: #67C23A;
 }
 .title1,.title2{
   position: absolute;
- top: 70px;
- left: 90px;
+ top: 0px;
+ left: 0px;
+ 
 }
 .title3{
   position: absolute;
-  top:120px;
-  left:140px
+  top:50px;
+  left:-50px;
+  margin:20px;
 }
 .first{
   display: flex;

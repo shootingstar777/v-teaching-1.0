@@ -118,8 +118,8 @@ export default {
           },
           {
             min: 2,
-            max: 8,
-            message: "长度需要2-8个字符",
+            max: 20,
+            message: "长度需要2-20个字符",
             trigger: "blur",
           },
         ],
@@ -159,14 +159,14 @@ export default {
             (res) => {
               if (res.success == true) {
                 window.sessionStorage.setItem("token", res.data.token);
-                this.$message.success("登录成功，欢迎进入");
+               
                 this.$http
-                  .get("user/getUserInfo", {
-                    params: { token: sessionStorage.getItem("token") },
-                  })
+                  .get("user/getUserInfo")
                   .then(
                     (res) => {
-                      console.log(res);
+                     
+                       this.$message.success(`登录成功，欢迎  ${res.data.userName}  进入`);
+                      this.$store.commit("renewUserName",res.data.userName)
                     },
                     (err) => {
                       console.log(err);
@@ -178,7 +178,8 @@ export default {
             (err) => {
               return this.$message.error(err.message);
             }
-          );
+          ); 
+          
         }
         if (!valid) {
           return this.$message.error("登录失败");
