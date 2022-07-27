@@ -6,8 +6,11 @@
       <el-breadcrumb-item>随机练习</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 视图区 -->
-     <el-card style="position: relative">
+    <el-card style="position: relative" v-loading="loading">
       <el-button type="danger" round>随机练习</el-button>
+      <el-button type="info" round
+        >题目共有{{ index + 1 }}/{{ questionData.length }}</el-button
+      >
       <el-card class="pageShowing">
         <el-carousel
           indicator-position="none"
@@ -16,7 +19,7 @@
           ref="carousel"
           :loop="false"
         >
-         <el-carousel-item
+          <el-carousel-item
             v-for="(item, index) in questionData"
             :key="item.id"
           >
@@ -28,7 +31,7 @@
               @click="collectBtnClick(item, index)"
               >收藏</el-tag
             >
-           
+
             <h1 :class="questionName">{{ index + 1 }}.{{ item.question }}</h1>
             <div>
               <el-radio-group v-model="choice" @change="makeChoice">
@@ -56,10 +59,10 @@
       <el-collapse accordion>
         <el-collapse-item :name="index">
           <template #title>
-            <p class="answer">答案与解析</p>
+            <p class="answer" @click="showAnswerAndExplanation()">答案与解析</p>
           </template>
-          <h1>本题的答案为: {{ showAnswer() }}</h1>
-          <p>解析：{{ showExplain() }}</p>
+          <h1>本题的答案为:{{ answer }}</h1>
+          <p>解析：{{ explanation }}</p>
         </el-collapse-item>
       </el-collapse>
     </el-card>
@@ -68,21 +71,24 @@
 
 <script>
 export default {
-data() {
+  data() {
     return {
+      loading:"",
       choice: "",
       data: "",
       index: 0,
       activeName: "",
-       questionData: "",
-       questionName:""
+      questionData: "",
+      questionName: "",
+      answer: "",
+      explanation: "",
     };
   },
   created() {
     this.load();
   },
   methods: {
-   collectBtnClick(item, index) {
+    collectBtnClick(item, index) {
       this.$http
         .post("collection/star", {
           questionId: item.id,
@@ -90,20 +96,20 @@ data() {
         .then(
           (res) => {
             this.$message.success("收藏成功");
-            this.type="success"
+            this.type = "success";
           },
           (err) => {
-           this.$message.error(err.message)
+            this.$message.error(err.message);
           }
         );
     },
-    
+
     load() {
+      this.loading=true
       this.$http.post("question/module", { module: 1 }).then(
         (res) => {
-          console.log(res);
-          this.$store.commit("getQuestionData", res.data);
           this.questionData = res.data;
+          this.loading=false
         },
         (err) => {
           console.log(err);
@@ -116,20 +122,18 @@ data() {
     nextPage() {
       this.$refs.carousel.next();
       this.index = this.$refs.carousel.activeIndex;
-      this.questionName=""
+      this.questionName = "";
     },
     lastPage() {
       this.$refs.carousel.prev();
       this.index = this.$refs.carousel.activeIndex;
-      this.questionName=""
+      this.questionName = "";
     },
-     /* 获取答案与解析 */
-    showAnswer() {
-      return this.questionData[this.index].answer;
+    /* 获取答案与解析 */
+    showAnswerAndExplanation() {
+      this.answer = this.questionData[this.index].answer;
+      this.explanation = this.questionData[this.index].explanation;
     },
-    showExplain() {
-      return this.questionData[this.index].questionExplain;
-    }, 
     makeChoice(choice) {
       if (choice == this.questionData[this.index].answer) {
         this.questionName = "right";
@@ -138,15 +142,15 @@ data() {
       }
     },
   },
-}
+};
 </script>
 
 <style>
 .right {
-  color: #67C23A;
+  color: #67c23a;
 }
 
 .wrong {
-  color: #F56C6C;
+  color: #f56c6c;
 }
 </style>

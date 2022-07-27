@@ -36,6 +36,7 @@ import {
   Dialog,
   Avatar,
   Popover,
+  Loading,
 } from 'element-ui'
 
 
@@ -76,4 +77,5 @@ Vue.use(InfiniteScroll)
 Vue.use(Dialog)
 Vue.use(Avatar)
 Vue.use(Popover)
+Vue.use(Loading)
 Vue.prototype.$message = Message

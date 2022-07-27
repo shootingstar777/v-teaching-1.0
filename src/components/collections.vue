@@ -6,8 +6,11 @@
       <el-breadcrumb-item>收藏</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 视图区 -->
-    <el-card>
+    <el-card v-loading="loading">
       <el-button type="danger" round>收藏</el-button>
+      <el-button type="info" round
+        >收藏共有{{ index + 1 }}/{{ data.length }}</el-button
+      >
       <el-card class="pageShowing">
         <el-carousel
           indicator-position="none"
@@ -78,12 +81,13 @@
 export default {
   data() {
     return {
+      loading: false,
       data: "",
       index: 0,
       activeName: "",
-      questionName:"",
-      type:"",
-      choice:""
+      questionName: "",
+      type: "",
+      choice: "",
     };
   },
   created() {
@@ -97,9 +101,7 @@ export default {
         })
         .then(
           (res) => {
-            console.log(res);
             this.$message.success("收藏成功");
-            this.type = "success";
           },
           (err) => {
             console.log(err);
@@ -113,9 +115,8 @@ export default {
         })
         .then(
           (res) => {
-            console.log(res);
             this.$message.info("取消收藏");
-            this.type = "info";
+
           },
           (err) => {
             this.$message.error(err.message);
@@ -123,10 +124,11 @@ export default {
         );
     },
     load() {
+      this.loading = true;
       this.$http.get("collection/starQuestions").then(
         (res) => {
-          console.log(res);
           this.data = res.data;
+          this.loading = false;
         },
         (err) => {
           console.log(err);

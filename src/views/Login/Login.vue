@@ -1,9 +1,9 @@
 <template>
-  <div class="login_container">
+  <div class="login_container" v-loading="loading">
     <div class="login_box">
       <!-- 头像区域 -->
       <div class="avatat_box">
-        <img src="../../assets/logo1.png" alt="" />
+        <img src="../../assets/photo.jpg" alt="" />
       </div>
       <!-- 登录表单区域 -->
       <el-form
@@ -76,7 +76,6 @@
             autocomplete="off"
             style="width: 60%"
             type="password"
-            @blur="checkUserName()"
           ></el-input>
           <p class="registerPasswordInfo">{{ registerPasswordInfo }}</p>
         </el-form-item>
@@ -99,6 +98,7 @@ export default {
   components: {},
   data() {
     return {
+      loading: false,
       dialogVisible: false,
       LoginForm: {
         userName: "shooting",
@@ -131,8 +131,8 @@ export default {
           },
           {
             min: 6,
-            max: 15,
-            message: "长度需要6-15个字符",
+            max: 18,
+            message: "长度需要6-18个字符",
             trigger: "blur",
           },
         ],
@@ -149,37 +149,36 @@ export default {
       this.$nextTick(() => {
         this.$refs.loginFormRef.resetFields();
       });
-      this.$refs.loginFormRef.resetFields();
+     /*  this.$refs.loginFormRef.resetFields(); */
     },
     /* 点击登录按钮，登录 */
     login() {
       this.$refs.loginFormRef.validate(async (valid) => {
         if (valid) {
+          this.loading = true;
           this.$http.post("user/login", this.LoginForm).then(
             (res) => {
               if (res.success == true) {
+                this.loading=false
                 window.sessionStorage.setItem("token", res.data.token);
-               
-                this.$http
-                  .get("user/getUserInfo")
-                  .then(
-                    (res) => {
-                     
-                       this.$message.success(`登录成功，欢迎  ${res.data.userName}  进入`);
-                      this.$store.commit("renewUserName",res.data.userName)
-                    },
-                    (err) => {
-                      console.log(err);
-                    }
-                  );
+                this.$http.get("user/getUserInfo").then(
+                  (res) => {
+                    this.$message.success(
+                      `登录成功，欢迎  ${res.data.userName}  进入`
+                    );
+                    this.$store.commit("renewUserName", res.data.userName);
+                  },
+                  (err) => {
+                    console.log(err);
+                  }
+                );
                 return this.$router.push("/home");
               }
             },
             (err) => {
               return this.$message.error(err.message);
             }
-          ); 
-          
+          );
         }
         if (!valid) {
           return this.$message.error("登录失败");
@@ -189,24 +188,23 @@ export default {
     /* 取消注册 */
     registerCancel() {
       this.dialogFormVisible = false;
-      this.$message.error("取消注册");
     },
     /* 点击注册按钮 */
     registerFinish() {
+      this.checkUserName()
       this.$refs.ruleForm.validate((res) => {
-        if (res == false) {
-          return;
-        } else {
+        if (res) {
+          this.loading=true
           this.$http.post("user/sign", this.registerForm).then(
             (response) => {
               this.$message.success("注册成功，请重新登录");
               this.dialogFormVisible = false;
-              this.$refs.ruleForm.resetFields();
             },
             (err) => {
               return (this.registerPasswordInfo = err.message);
             }
           );
+          this.loading =false
         }
       });
     },
@@ -219,9 +217,10 @@ export default {
         })
         .then(
           (res) => {
-            console.log(res);
-            if (!res.data) {
-              return (this.registerUsernameInfo = "用户名已存在");
+            if (res.code!==200) {
+             this.$message.error(res.data)
+            }else{
+              return;
             }
           },
           (err) => {
@@ -235,7 +234,8 @@ export default {
 
 <style lang="less" scoped>
 .login_container {
-  background-color: #2b4b6b;
+  background-color: rgb(150, 84, 84);
+
   height: 100%;
 }
 .login_box {

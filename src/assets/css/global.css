@@ -9,7 +9,7 @@ html,body,#app{
 }
 
 .el-main {
-  background: #eee;
+  background: rgb(255,250,244);
 }
 
 .el-breadcrumb{

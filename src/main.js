@@ -4,12 +4,9 @@ import router from './router'
 import './plugins/element.js'
 import './assets/css/global.css'
 import axios from 'axios'
-import Data from './data.js' 
 import store from './store/index.js'
 
 Vue.config.productionTip = false
-Vue.prototype.$Data = Data
-
 axios.defaults.timeout=-1
 axios.defaults.baseURL = "http://localhost:8080"
 Vue.prototype.$http = axios

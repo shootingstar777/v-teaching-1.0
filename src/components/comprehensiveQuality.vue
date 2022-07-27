@@ -7,8 +7,11 @@
       <el-breadcrumb-item>综合素质</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 视图区 -->
-    <el-card style="position: relative">
+    <el-card style="position: relative" v-loading="loading">
       <el-button type="danger" round>综合素质</el-button>
+      <el-button type="info" round
+        >题目共有{{ index + 1 }}/{{ questionData.length }}</el-button
+      >
       <el-card class="pageShowing">
         <el-carousel
           indicator-position="none"
@@ -56,10 +59,10 @@
       <el-collapse accordion>
         <el-collapse-item :name="index">
           <template #title>
-            <p class="answer">答案与解析</p>
+            <p class="answer" @click="showAnswerAndExplanation()">答案与解析</p>
           </template>
-          <h1>本题的答案为:{{ showAnswer() }}</h1>
-          <p>解析：{{ showExplain() }}</p>
+          <h1>本题的答案为:{{ answer }}</h1>
+          <p>解析：{{ explanation }}</p>
         </el-collapse-item>
       </el-collapse>
     </el-card>
@@ -71,11 +74,14 @@ export default {
   components: {},
   data() {
     return {
+      loading: false,
       choice: "",
       index: 0,
       questionData: "",
       activeName: "",
       questionName: "",
+      answer: "",
+      explanation: "",
     };
   },
   mounted() {
@@ -88,7 +94,6 @@ export default {
       }
     });
   },
-
   created() {
     this.load();
   },
@@ -101,7 +106,6 @@ export default {
         .then(
           (res) => {
             this.$message.success("收藏成功");
-            this.type = "success";
           },
           (err) => {
             this.$message.error(err.message);
@@ -110,11 +114,11 @@ export default {
     },
 
     load() {
+      this.loading = true;
       this.$http.post("question/module", { module: 1 }).then(
         (res) => {
-          console.log(res);
-          this.$store.commit("getQuestionData", res.data);
           this.questionData = res.data;
+          this.loading = false;
         },
         (err) => {
           console.log(err);
@@ -140,11 +144,9 @@ export default {
       }
     },
     /* 获取答案与解析 */
-    showAnswer() {
-      return this.questionData[this.index].answer;
-    },
-    showExplain() {
-      return this.questionData[this.index].questionExplain;
+    showAnswerAndExplanation() {
+      this.answer = this.questionData[this.index].answer;
+      this.explanation = this.questionData[this.index].explanation;
     },
   },
 };

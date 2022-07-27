@@ -3,12 +3,11 @@
     <!-- 头部区域 -->
     <el-header>
       <img src="../../assets/logo.png" style="width: 80%" alt="" />
-      <span>教资练习系统</span>
- 
-          <el-button class="logout" type="danger" @click="logout"
-            >退出登录</el-button
-          >
-   
+      <span>在线练习系统</span>
+
+      <el-button class="logout" type="danger" @click="logout"
+        >退出登录</el-button
+      >
     </el-header>
     <!-- 页面主体 -->
     <el-container>
@@ -109,7 +108,6 @@ export default {
     saveNavState(activePath) {
       window.sessionStorage.setItem("activePath", activePath);
       this.activePath = activePath;
-     
     },
   },
 };
@@ -140,9 +138,7 @@ export default {
 .el-aside .el-menu {
   border-right: none;
 }
-.el-main {
-  background-color: #eaedf1;
-}
+
 .toggle-button {
   background-color: #4a5064;
   font-size: 10px;

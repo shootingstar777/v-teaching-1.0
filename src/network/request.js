@@ -1,3 +1,4 @@
+/* 用的是main.js的，这个可以不用管 */
 import axios from "axios";
 export function request(config, success, failure) {
   //1.创建axios实例
