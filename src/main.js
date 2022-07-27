@@ -46,7 +46,6 @@ axios.interceptors.response.use(
   }
   )
 
-localStorage.setItem('data',JSON.stringify(Data))
 
 new Vue({
   router,
